@@ -10,7 +10,7 @@ and row major), and transposes (no transpose, transpose, and conjugate transpose
 For the clBLAS library, the CMake cross-compiler is programmed to use AutoGEMM to produce kernels that are 
 used as the GEMM backend. In this context, AutoGEMM is preconfigured to produce a variety of kernels to 
 handle all GEMM parameters and most of the matrix sizes. For developers who desire to support unique matrix 
-sizes, see Section IV Customizing to your needs on how to customize AutoGEMM for different applications.
+sizes, see Section IV *Customizing AutoGEMM to your needs* to customize AutoGEMM for different applications.
 
 
 ## II - Achieving Peak Gemm Performance
@@ -34,11 +34,11 @@ operations per loaded element.
 
 ### 1. Global memory bandwidth as a limiting factor for peak floating-point performance
 
-A naive GEMM implementation (real precision) performs 2*M*N*K floating-point operations and loads 2*M*N*K elements; 
+A naive GEMM implementation (real precision) performs 2\*M\*N\*K  floating-point operations and loads 2\*M\*N\*K elements; 
 that is, the ratio of floating-point operations to the number of loaded elements is 1:1. However, to achieve peak 
 performance, the ratio must be 66:1. To reduce the number of global memory loads, local memory tiles are used.
 
-A GxH local-memory tile reduces the number of loads from global memory to 2*(M/G)*(N/H)*(G+H)*K. Tiling local memory 
+A GxH local-memory tile reduces the number of loads from global memory to 2\*(M/G)\*(N/H)\*(G+H)\*K. Tiling local memory 
 overcomes the global memory bandwidth limitation as long as:
 
                           2GH/(G+H) > 66. 		……(i)
@@ -81,8 +81,9 @@ from LDS. This means that for each iteration over K, G*H MADDs are performed but
 - R\*S\*(P/S + Q/R) elements
 - P\*R + Q\*S elements
 - G + H elements
-So, the AMD implementation does 2GH flops / G+H loads. 2GH/(G+H) > 4 is less restrictive than the criteria mentioned by equation (i) 
-in the sub section 1. Global memory bandwidth as a limiting factor. Therefore, any tile which satisfies equation (i) also ensures that 
+
+So, the AMD implementation does 2GH flops / G+H loads. 2GH/(G+H) > 4 is less restrictive than the criteria mentioned by *equation (i)* 
+in the sub section *1. Global memory bandwidth as a limiting factor*. Therefore, any tile which satisfies *equation (i)* also ensures that 
 LDS bandwidth is not a limiting factor in achieving peak floating-point performance.
 
 ### 4. Local memory latency as a limiting factor for peak floating-point performance
@@ -96,7 +97,7 @@ of AutoGEMM kernels is limited by not having a high-enough occupancy to hide the
 A GEMM can be calculated by a kernel using a high-performance tile, say an ideal GxH macrotile in which M is a multiple of G and N 
 is a multiple of H.
 
-When MxN is not an exact multiple of a high-performing tile, then two main options exist for .........(need to complete the sentence).....
+When MxN is not an exact multiple of a high-performing tile, then two main options exist for *.........(need to complete the sentence).....*
 
 * Put branches in the kernel, so that each work group computes less than a full tile size; this option slows performance as discussed 
 in (vi).  
@@ -252,22 +253,22 @@ second fastest, and so on. It provides the kernel selection data, which is consu
 AutoGEMM generates various output files. The following is the hierarchical list of output files:  
 
 - AutoGEMM includes
-  - AutoGemmClKernels.cpp .h - declares and defines the cl\_kernel objects
-  - AutoGemmKernelBinaries.cpp .h - declares and defines the kernel binary arrays to be NULL; kernels which are pre-compiled will have a non-null binary array declared which overrides (through pre-processor ifdef's) the null declarations
-  - AutoGemmKernelBuildOptionsBinary.cpp .h - declares and defines the build options to be used when building kernels from pre-compiled binaries
-  - AutoGemmKernelBuildOptionsSource.cpp .h - declares and defines the build options to be used when building kernels from source
-  - AutoGemmKernelEnumeration.h - declares and defines arrays that list all the used tile and non-tile parameters. This file is used only by AutoGEMM adjunct tools for debugging 
-  - AutoGemmKernelSelection.cpp .h - declares and defines gemmSelectKernel(), which selects the optimal GEMM kernel based on matrix size. clBLAS only includes (#includes) this file which, in turn, includes (#includes) other necessary header files
-  - AutoGemmKernelSelectionSpecific.cpp .h - declares and defines gemmSelectKernelSpecific which selects a kernel by specifying the tile parameters. This file is only used by AutoGEMM adjunct tools for debugging 
-  - AutoGemmKernelSources.cpp .h - First #includes UserGemmKernelSources, then #includes the AutoGEMM kernels in AutoGemmKernelSources/; user-defined kernels override AutoGEMM kernels through preprocessor ifdefs
-  - AutoGemmKernelsToPreCompile.h - Lists the kernels that must be pre-compiled. This file is only used by the AutoGemmPreCompile project
+  - AutoGemmClKernels.cpp .h -- declares and defines the cl\_kernel objects
+  - AutoGemmKernelBinaries.cpp .h -- declares and defines the kernel binary arrays to be NULL; kernels which are pre-compiled will have a non-null binary array declared which overrides (through pre-processor ifdef's) the null declarations
+  - AutoGemmKernelBuildOptionsBinary.cpp .h -- declares and defines the build options to be used when building kernels from pre-compiled binaries
+  - AutoGemmKernelBuildOptionsSource.cpp .h -- declares and defines the build options to be used when building kernels from source
+  - AutoGemmKernelEnumeration.h -- declares and defines arrays that list all the used tile and non-tile parameters. This file is used only by AutoGEMM adjunct tools for debugging 
+  - AutoGemmKernelSelection.cpp .h -- declares and defines gemmSelectKernel(), which selects the optimal GEMM kernel based on matrix size. clBLAS only includes (#includes) this file which, in turn, includes (#includes) other necessary header files
+  - AutoGemmKernelSelectionSpecific.cpp .h -- declares and defines gemmSelectKernelSpecific which selects a kernel by specifying the tile parameters. This file is only used by AutoGEMM adjunct tools for debugging 
+  - AutoGemmKernelSources.cpp .h -- First #includes UserGemmKernelSources, then #includes the AutoGEMM kernels in AutoGemmKernelSources/; user-defined kernels override AutoGEMM kernels through preprocessor ifdefs
+  - AutoGemmKernelsToPreCompile.h -- Lists the kernels that must be pre-compiled. This file is only used by the AutoGemmPreCompile project
 
 - AutoGemmKernelBinaries (will be empty if no kernels selected to be pre-compiled)
-  - AutoGemmKernelBinariesPreCompiled.cpp .h - #includes all the pre-compiled binary kernel files
-  - \*\_bin.cpp - pre-compiled binary kernel files
+  - AutoGemmKernelBinariesPreCompiled.cpp .h -- #includes all the pre-compiled binary kernel files
+  - \*\_bin.cpp -- pre-compiled binary kernel files
     
 - AutoGemmKernelSources
-  - \*\_src.cpp - kernel source files
+  - \*\_src.cpp -- kernel source files
 
 
 ### "Building" AutoGEMM with CMake for clBLAS
@@ -287,7 +288,7 @@ CMake is configured as follows:
 5. Compile clBLAS now that all the dependencies have been generated.
 
 
-## IV - Customizing AutoGEMM to your Needs
+## IV - Customizing AutoGEMM to your needs
 
 AutoGEMM within clBLAS comes pre-loaded with a list of kernels to use and kernel selection data, usually based on AMD's latest generation 
 flagship GPU, which would suffice most applications. Advanced users or developers seeking a higher level of performance for unique applications 
@@ -305,12 +306,14 @@ To add your own custom tile:
 
 1. Add the dimensions of the new tile anywhere within the kernelSelectionData.  
 2. Re-run AutoGEMM.
+  
    It will write kernels using your new tile size and, importantly, it will add those tile sizes to AutoGemmKernelEnumeration.h.
 3. Compile and run the AutoGemm_Tools_Profile project. 
+    
    This task benchmarks all matrix sizes using all tile sizes including the new one. It also outputs the new kernel selection 
 data which indicates the matrices for which your new kernel is the fastest (and is recommended to use).
 
-Caveat: If your new kernel is designed to be fast for matrices of a particular dimension, for example: skinny tile for skinny 
+*Caveat*: If your new kernel is designed to be fast for matrices of a particular dimension, for example: skinny tile for skinny 
 matrices, you would first need to modify ProfileAutoGemm.cpp so that the profiler tests your custom matrix dimension.
 
 ### Tuning kernel selection to new GPU
