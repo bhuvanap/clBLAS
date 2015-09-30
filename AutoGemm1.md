@@ -41,7 +41,7 @@ performance, the ratio must be 66:1. To reduce the number of global memory loads
 A GxH local-memory tile reduces the number of loads from global memory to 2\*(M/G)\*(N/H)\*(G+H)\*K. Tiling local memory 
 overcomes the global memory bandwidth limitation as long as:
 
-                          2GH/(G+H) > 66. 		……(i)
+                                      2GH/(G+H) > 66. 		……(i)
 
 Some of the smallest GxH tiles which can achieve peak performance are:
 - 67x67
@@ -252,7 +252,7 @@ second fastest, and so on. It provides the kernel selection data, which is consu
 
 AutoGEMM generates various output files. The following is the hierarchical list of output files:  
 
-- AutoGEMM includes
+- AutoGEMM includes:
   - AutoGemmClKernels.cpp .h -- declares and defines the cl\_kernel objects
   - AutoGemmKernelBinaries.cpp .h -- declares and defines the kernel binary arrays to be NULL; kernels which are pre-compiled will have a non-null binary array declared which overrides (through pre-processor ifdef's) the null declarations
   - AutoGemmKernelBuildOptionsBinary.cpp .h -- declares and defines the build options to be used when building kernels from pre-compiled binaries
@@ -313,7 +313,7 @@ To add your own custom tile:
    This task benchmarks all matrix sizes using all tile sizes including the new one. It also outputs the new kernel selection 
 data which indicates the matrices for which your new kernel is the fastest (and is recommended to use).
 
-*Caveat*: If your new kernel is designed to be fast for matrices of a particular dimension, for example: skinny tile for skinny 
+**Caveat**: If your new kernel is designed to be fast for matrices of a particular dimension, for example: skinny tile for skinny 
 matrices, you would first need to modify ProfileAutoGemm.cpp so that the profiler tests your custom matrix dimension.
 
 ### Tuning kernel selection to new GPU
